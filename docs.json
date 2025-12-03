@@ -1,0 +1,296 @@
+[
+  {
+    "Command": [],
+    "Constant": [],
+    "Constructor": [],
+    "Deprecated": [],
+    "Field": [],
+    "Function": [
+      {
+        "def": "SSHSignatures:sshAgentListIdentities(cbResponse)",
+        "desc": " Retreive a list of loaded identities/public keys from `ssh-agent`",
+        "doc": " Retreive a list of loaded identities/public keys from `ssh-agent`\n\nParameters:\n * `cbResponse`: A callback function that will receive the list of identities as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n * `cbResponse` will be called with a table of keys, each in the format:\n   ```lua\n   { comment = string,\n     key = string,\n     keyType = \"ssh-rsa\" -- example key type\n   }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "429",
+        "name": "sshAgentListIdentities",
+        "notes": [
+          " * `cbResponse` will be called with a table of keys, each in the format:",
+          "   ```lua",
+          "   { comment = string,",
+          "     key = string,",
+          "     keyType = \"ssh-rsa\" -- example key type",
+          "   }",
+          "   ```"
+        ],
+        "parameters": [
+          " * `cbResponse`: A callback function that will receive the list of identities as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentListIdentities(cbResponse)",
+        "stripped_doc": "",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshAgentLockUnlock(lock, passphrase, cbResponse)",
+        "desc": " Request `ssh-agent` to lock or unlock with the given `passphrase`. When locked all other requests are denied.",
+        "doc": " Request `ssh-agent` to lock or unlock with the given `passphrase`. When locked all other requests are denied.\n\nParameters:\n * `lock`: `true` to lock the agent, `false` to unlock\n * `passphrase`: string that when unlocking, must match the one provided when locking\n * `cbResponse`: A callback function that will receive wether the operation succeded as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n ```lua\n -- Lock\n spoon.SSHSignatures:sshAgentLockUnlock(true, \"passphrase\", function (succeded)\n   assert(succeded)\n   spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n     print(hs.inspect(keys)) -- {}\n\n     -- Unlock\n     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)\n       assert(succeded)\n\n       spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n         print(hs.inspect(keys)) -- { key1, key2, ... }\n       end)\n     end)\n   end)\n end)\n ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "533",
+        "name": "sshAgentLockUnlock",
+        "notes": [
+          " ```lua",
+          " -- Lock",
+          " spoon.SSHSignatures:sshAgentLockUnlock(true, \"passphrase\", function (succeded)",
+          "   assert(succeded)",
+          "   spoon.SSHSignatures:sshAgentListIdentities(function (keys)",
+          "     print(hs.inspect(keys)) -- {}",
+          "",
+          "     -- Unlock",
+          "     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)",
+          "       assert(succeded)",
+          "",
+          "       spoon.SSHSignatures:sshAgentListIdentities(function (keys)",
+          "         print(hs.inspect(keys)) -- { key1, key2, ... }",
+          "       end)",
+          "     end)",
+          "   end)",
+          " end)",
+          " ```"
+        ],
+        "parameters": [
+          " * `lock`: `true` to lock the agent, `false` to unlock",
+          " * `passphrase`: string that when unlocking, must match the one provided when locking",
+          " * `cbResponse`: A callback function that will receive wether the operation succeded as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentLockUnlock(lock, passphrase, cbResponse)",
+        "stripped_doc": "     -- Unlock\n     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)\n       assert(succeded)\n       spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n         print(hs.inspect(keys)) -- { key1, key2, ... }\n       end)\n     end)\n   end)\n end)\n ```",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshAgentSign(data, key, ns, cbResponse)",
+        "desc": " Request `ssh-agent` sign `data` with the private key corresponding to `pk`",
+        "doc": " Request `ssh-agent` sign `data` with the private key corresponding to `pk`\n\nParameters:\n * `data`: A string with the data to sign\n * `key`: The public key to use to find the key to sign with. Either a string or a value from `SSHSignatures:sshAgentListIdentities`\n * `ns`: A string with the namespace included in the signed data. Usually `\"file\"` or `\"email\"` or `\"custom@your.domain\"`\n * `cbResponse`: A callback function that will receive the signature as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n * `cbResponse` will be called with the signature in the format:\n   ```lua\n   { signature = string,\n     keyType = \"ssh-rsa\" -- example key type, extracted from the `signature` field, just informative\n   }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "498",
+        "name": "sshAgentSign",
+        "notes": [
+          " * `cbResponse` will be called with the signature in the format:",
+          "   ```lua",
+          "   { signature = string,",
+          "     keyType = \"ssh-rsa\" -- example key type, extracted from the `signature` field, just informative",
+          "   }",
+          "   ```"
+        ],
+        "parameters": [
+          " * `data`: A string with the data to sign",
+          " * `key`: The public key to use to find the key to sign with. Either a string or a value from `SSHSignatures:sshAgentListIdentities`",
+          " * `ns`: A string with the namespace included in the signed data. Usually `\"file\"` or `\"email\"` or `\"custom@your.domain\"`",
+          " * `cbResponse`: A callback function that will receive the signature as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentSign(data, key, ns, cbResponse)",
+        "stripped_doc": "",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshKeygenReadSignature(contents)",
+        "desc": " Parses the output of `ssh-keygen -Y sign`",
+        "doc": " Parses the output of `ssh-keygen -Y sign`\n\nParameters:\n * `contents`: String with `ssh-keygen` signature format\n\nReturns:\n * A table of the format (values are examples):\n   ```lua\n   { hash = \"sha512\",\n     ns = \"file\",\n     pk =  { keyType = \"ssh-ed25519\", key = string },\n     sig = { sigType = \"ssh-ed25519\", signature = string },\n     reserved = \"\",\n     ssh_version = 1 }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "391",
+        "name": "sshKeygenReadSignature",
+        "notes": [],
+        "parameters": [
+          " * `contents`: String with `ssh-keygen` signature format"
+        ],
+        "returns": [
+          " * A table of the format (values are examples):",
+          "   ```lua",
+          "   { hash = \"sha512\",",
+          "     ns = \"file\",",
+          "     pk =  { keyType = \"ssh-ed25519\", key = string },",
+          "     sig = { sigType = \"ssh-ed25519\", signature = string },",
+          "     reserved = \"\",",
+          "     ssh_version = 1 }",
+          "   ```"
+        ],
+        "signature": "SSHSignatures:sshKeygenReadSignature(contents)",
+        "stripped_doc": "",
+        "type": "Function"
+      }
+    ],
+    "Method": [],
+    "Variable": [
+      {
+        "def": "SSHSignatures.socketPath (string)",
+        "desc": " Unix socket path to `ssh-agent`",
+        "doc": " Unix socket path to `ssh-agent`\nNotes:\n * Defaults to `os.getenv(\"SSH_AUTH_SOCK\")`",
+        "file": "./init.lua",
+        "lineno": "36",
+        "name": "socketPath",
+        "notes": [
+          " * Defaults to `os.getenv(\"SSH_AUTH_SOCK\")`"
+        ],
+        "signature": "SSHSignatures.socketPath (string)",
+        "stripped_doc": "",
+        "type": "Variable"
+      }
+    ],
+    "desc": "Helpers to use `ssh-agent` to list public keys, sign data, or lock it",
+    "doc": "Helpers to use `ssh-agent` to list public keys, sign data, or lock it\n\n## Usage\n\n```lua\nhs.loadSpoon(\"SSHSignatures\")\nspoon.SSHSignatures:sshAgentListIdentities(function (keys)\n  print(hs.inspect(keys))\n  spoon.SSHSignatures:sshAgentSign(\"some data to sign\", keys[1], \"file\", function (signature)\n    print(hs.inspect(signature))\n  end)\nend)\n```",
+    "items": [
+      {
+        "def": "SSHSignatures.socketPath (string)",
+        "desc": " Unix socket path to `ssh-agent`",
+        "doc": " Unix socket path to `ssh-agent`\nNotes:\n * Defaults to `os.getenv(\"SSH_AUTH_SOCK\")`",
+        "file": "./init.lua",
+        "lineno": "36",
+        "name": "socketPath",
+        "notes": [
+          " * Defaults to `os.getenv(\"SSH_AUTH_SOCK\")`"
+        ],
+        "signature": "SSHSignatures.socketPath (string)",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "SSHSignatures:sshAgentListIdentities(cbResponse)",
+        "desc": " Retreive a list of loaded identities/public keys from `ssh-agent`",
+        "doc": " Retreive a list of loaded identities/public keys from `ssh-agent`\n\nParameters:\n * `cbResponse`: A callback function that will receive the list of identities as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n * `cbResponse` will be called with a table of keys, each in the format:\n   ```lua\n   { comment = string,\n     key = string,\n     keyType = \"ssh-rsa\" -- example key type\n   }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "429",
+        "name": "sshAgentListIdentities",
+        "notes": [
+          " * `cbResponse` will be called with a table of keys, each in the format:",
+          "   ```lua",
+          "   { comment = string,",
+          "     key = string,",
+          "     keyType = \"ssh-rsa\" -- example key type",
+          "   }",
+          "   ```"
+        ],
+        "parameters": [
+          " * `cbResponse`: A callback function that will receive the list of identities as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentListIdentities(cbResponse)",
+        "stripped_doc": "",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshAgentLockUnlock(lock, passphrase, cbResponse)",
+        "desc": " Request `ssh-agent` to lock or unlock with the given `passphrase`. When locked all other requests are denied.",
+        "doc": " Request `ssh-agent` to lock or unlock with the given `passphrase`. When locked all other requests are denied.\n\nParameters:\n * `lock`: `true` to lock the agent, `false` to unlock\n * `passphrase`: string that when unlocking, must match the one provided when locking\n * `cbResponse`: A callback function that will receive wether the operation succeded as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n ```lua\n -- Lock\n spoon.SSHSignatures:sshAgentLockUnlock(true, \"passphrase\", function (succeded)\n   assert(succeded)\n   spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n     print(hs.inspect(keys)) -- {}\n\n     -- Unlock\n     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)\n       assert(succeded)\n\n       spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n         print(hs.inspect(keys)) -- { key1, key2, ... }\n       end)\n     end)\n   end)\n end)\n ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "533",
+        "name": "sshAgentLockUnlock",
+        "notes": [
+          " ```lua",
+          " -- Lock",
+          " spoon.SSHSignatures:sshAgentLockUnlock(true, \"passphrase\", function (succeded)",
+          "   assert(succeded)",
+          "   spoon.SSHSignatures:sshAgentListIdentities(function (keys)",
+          "     print(hs.inspect(keys)) -- {}",
+          "",
+          "     -- Unlock",
+          "     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)",
+          "       assert(succeded)",
+          "",
+          "       spoon.SSHSignatures:sshAgentListIdentities(function (keys)",
+          "         print(hs.inspect(keys)) -- { key1, key2, ... }",
+          "       end)",
+          "     end)",
+          "   end)",
+          " end)",
+          " ```"
+        ],
+        "parameters": [
+          " * `lock`: `true` to lock the agent, `false` to unlock",
+          " * `passphrase`: string that when unlocking, must match the one provided when locking",
+          " * `cbResponse`: A callback function that will receive wether the operation succeded as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentLockUnlock(lock, passphrase, cbResponse)",
+        "stripped_doc": "     -- Unlock\n     spoon.SSHSignatures:sshAgentLockUnlock(false, \"passphrase\", function (succeded)\n       assert(succeded)\n       spoon.SSHSignatures:sshAgentListIdentities(function (keys)\n         print(hs.inspect(keys)) -- { key1, key2, ... }\n       end)\n     end)\n   end)\n end)\n ```",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshAgentSign(data, key, ns, cbResponse)",
+        "desc": " Request `ssh-agent` sign `data` with the private key corresponding to `pk`",
+        "doc": " Request `ssh-agent` sign `data` with the private key corresponding to `pk`\n\nParameters:\n * `data`: A string with the data to sign\n * `key`: The public key to use to find the key to sign with. Either a string or a value from `SSHSignatures:sshAgentListIdentities`\n * `ns`: A string with the namespace included in the signed data. Usually `\"file\"` or `\"email\"` or `\"custom@your.domain\"`\n * `cbResponse`: A callback function that will receive the signature as first argument\n\nReturns:\n * `SSHSignatures`\n\nNotes:\n * `cbResponse` will be called with the signature in the format:\n   ```lua\n   { signature = string,\n     keyType = \"ssh-rsa\" -- example key type, extracted from the `signature` field, just informative\n   }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "498",
+        "name": "sshAgentSign",
+        "notes": [
+          " * `cbResponse` will be called with the signature in the format:",
+          "   ```lua",
+          "   { signature = string,",
+          "     keyType = \"ssh-rsa\" -- example key type, extracted from the `signature` field, just informative",
+          "   }",
+          "   ```"
+        ],
+        "parameters": [
+          " * `data`: A string with the data to sign",
+          " * `key`: The public key to use to find the key to sign with. Either a string or a value from `SSHSignatures:sshAgentListIdentities`",
+          " * `ns`: A string with the namespace included in the signed data. Usually `\"file\"` or `\"email\"` or `\"custom@your.domain\"`",
+          " * `cbResponse`: A callback function that will receive the signature as first argument"
+        ],
+        "returns": [
+          " * `SSHSignatures`"
+        ],
+        "signature": "SSHSignatures:sshAgentSign(data, key, ns, cbResponse)",
+        "stripped_doc": "",
+        "type": "Function"
+      },
+      {
+        "def": "SSHSignatures:sshKeygenReadSignature(contents)",
+        "desc": " Parses the output of `ssh-keygen -Y sign`",
+        "doc": " Parses the output of `ssh-keygen -Y sign`\n\nParameters:\n * `contents`: String with `ssh-keygen` signature format\n\nReturns:\n * A table of the format (values are examples):\n   ```lua\n   { hash = \"sha512\",\n     ns = \"file\",\n     pk =  { keyType = \"ssh-ed25519\", key = string },\n     sig = { sigType = \"ssh-ed25519\", signature = string },\n     reserved = \"\",\n     ssh_version = 1 }\n   ```",
+        "examples": [],
+        "file": "./init.lua",
+        "lineno": "391",
+        "name": "sshKeygenReadSignature",
+        "notes": [],
+        "parameters": [
+          " * `contents`: String with `ssh-keygen` signature format"
+        ],
+        "returns": [
+          " * A table of the format (values are examples):",
+          "   ```lua",
+          "   { hash = \"sha512\",",
+          "     ns = \"file\",",
+          "     pk =  { keyType = \"ssh-ed25519\", key = string },",
+          "     sig = { sigType = \"ssh-ed25519\", signature = string },",
+          "     reserved = \"\",",
+          "     ssh_version = 1 }",
+          "   ```"
+        ],
+        "signature": "SSHSignatures:sshKeygenReadSignature(contents)",
+        "stripped_doc": "",
+        "type": "Function"
+      }
+    ],
+    "name": "SSHSignatures",
+    "stripped_doc": "\n## Usage\n\n```lua\nhs.loadSpoon(\"SSHSignatures\")\nspoon.SSHSignatures:sshAgentListIdentities(function (keys)\n  print(hs.inspect(keys))\n  spoon.SSHSignatures:sshAgentSign(\"some data to sign\", keys[1], \"file\", function (signature)\n    print(hs.inspect(signature))\n  end)\nend)\n```",
+    "submodules": [],
+    "type": "Module"
+  }
+]
