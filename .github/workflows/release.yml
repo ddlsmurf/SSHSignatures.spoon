@@ -1,0 +1,53 @@
+name: Release Hammerspoon Spoon
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get commit SHA
+        id: get_sha
+        run: echo "SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create Spoon zip
+        run: git archive --format=zip --prefix=SSHSignatures.spoon/ -o SSHSignatures.spoon.zip HEAD init.lua docs.json
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_sha.outputs.SHA }}
+          release_name: "Build ${{ steps.get_sha.outputs.SHA }}"
+          body: "This is a build from the `main` branch."
+          draft: false
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./SSHSignatures.spoon.zip
+          asset_name: SSHSignatures.spoon.zip
+          asset_content_type: application/zip
+
+      - name: Delete tag
+        run: git push --delete origin ${{ steps.get_sha.outputs.SHA }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
